@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LuxeStay - Room Booking App
 
-## Getting Started
+A modern, responsive Room Booking Application built with **Next.js 16 (App Router)**, **TypeScript**, **Tailwind CSS**, and **Supabase**.
 
-First, run the development server:
+## 🌟 Key Features
 
+1. **Room Catalog from Supabase**
+   - Displays a rich collection of rooms with high-resolution imagery, pricing per night, capacity, star ratings, and amenities.
+   - Real-time search across room titles, descriptions, and amenities.
+   - Category filtering (Suites, Chalets, Penthouses, Villas, Studios, Family Suites) and price/capacity sorting.
+   - Seamless fallback & demo mode when Supabase credentials are not yet configured.
+
+2. **Interactive Date Picker & Live Price Calculation**
+   - Pick **Check-in** and **Check-out** dates with validation (check-out must be after check-in, check-in from today).
+   - Dynamic real-time calculation:
+     - Number of nights calculated instantly (`checkOut - checkIn`)
+     - Subtotal breakdown (`price_per_night × nights`)
+     - Estimated taxes & service fee (10%)
+     - Accurate total price display updating live as dates change.
+
+3. **Booking Reservation & Database Persistence**
+   - Guest details input (Full Name, Email, Phone, Special requests, Guest count).
+   - Saves reservation to the Supabase `bookings` table via Next.js Server Actions.
+   - Instant confirmation receipt with reference ID, summary of charges, and reservation dates.
+   - "My Bookings" modal to review all confirmed reservations loaded from the database.
+
+4. **Supabase Integration & 1-Click Seeding**
+   - Full SQL schema with table definitions, foreign keys, and Row Level Security (RLS) policies in `supabase/schema.sql`.
+   - "Seed Database" button in the UI to quickly populate your Supabase project with sample rooms.
+
+---
+
+## 🚀 Getting Started
+
+### 1. Install Dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Configure Supabase (Optional for Live DB)
+The app works immediately in **Demo Mode** with mock data and local storage. To connect your live Supabase project:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Create a project on [supabase.com](https://supabase.com).
+2. Go to the **SQL Editor** in Supabase and run the script in:
+   ```
+   supabase/schema.sql
+   ```
+3. Copy your project credentials from **Project Settings -> API** and create a `.env.local` file:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Run Development Server
+```bash
+npm run dev
+```
 
-## Learn More
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📁 Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+├── src/
+│   ├── app/
+│   │   ├── actions/
+│   │   │   └── booking.ts       # Server actions for rooms & bookings
+│   │   ├── globals.css          # Tailwind CSS styles
+│   │   ├── layout.tsx           # Root layout with fonts & metadata
+│   │   └── page.tsx             # Main room booking homepage
+│   ├── components/
+│   │   ├── BookingModal.tsx     # Date selection, live price calc & checkout
+│   │   ├── BookingsListModal.tsx# Saved reservations view
+│   │   ├── Header.tsx           # Brand navbar & Supabase status badge
+│   │   ├── RoomCard.tsx         # Room card with amenities & Book Now CTA
+│   │   ├── SupabaseGuideModal.tsx # Setup instructions popup
+│   │   └── SupabaseNotice.tsx   # Connection banner & seed button
+│   ├── lib/
+│   │   ├── mock-data.ts         # Initial sample rooms
+│   │   └── supabase.ts          # Supabase client & environment checker
+│   └── types/
+│       └── index.ts             # TypeScript interfaces for Room & Booking
+├── supabase/
+│   └── schema.sql               # Database migration & seed script
+└── next.config.ts               # Next.js configuration & image domains
+```
